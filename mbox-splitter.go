@@ -21,6 +21,8 @@ func main() {
 	var b strings.Builder
 	var l, currentFirstl, nextFirstl string
 	s := bufio.NewScanner(f)
+
+	// grab the first line of the mbox file to get us going, add it to the current email
 	s.Scan()
 	currentFirstl = s.Text()
 	addLine(&b, currentFirstl)
@@ -44,10 +46,15 @@ func main() {
 	}
 }
 
+// addLine adds the next line to the email.
+// For some reason, Builder.WriteString strips new lines (!?), hence this function.
 func addLine(b *strings.Builder, l string) {
 	b.WriteString(fmt.Sprintf("%s\n", l))
 }
 
+// writeEmail writes a single email to a new archive, based on year.
+// It checks whether YEAR.mbox exists, if not it creates it in the same directory as the original mbox file.
+// It then adds a single email to the YEAR.mbox file
 func writeEmail(email string) {
 	fmt.Println("*********************")
 	fmt.Println("WRITING EMAIL TO FILE")
