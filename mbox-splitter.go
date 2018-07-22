@@ -6,10 +6,12 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"regexp"
 	"strings"
 )
 
 func main() {
+	fmt.Println("Splitting your mbox file...")
 	file := flag.String("f", "./test_file", "path to the mbox file you wish to split")
 	flag.Parse()
 	f, err := os.Open(*file)
@@ -56,11 +58,31 @@ func addLine(b *strings.Builder, l string) {
 // It checks whether YEAR.mbox exists, if not it creates it in the same directory as the original mbox file.
 // It then adds a single email to the YEAR.mbox file
 func writeEmail(email string) {
-	fmt.Println("*********************")
-	fmt.Println("WRITING EMAIL TO FILE")
-	fmt.Println("*********************")
-	fmt.Println(email)
-	fmt.Println("***")
-	fmt.Println("END")
-	fmt.Println("***")
+	// declare file handle
+	var f *os.File
+	// extract the year
+	re, _ := regexp.Compile(`(^From.*)`)
+	fl := re.FindString(email)
+	if len(fl) == 0 {
+		log.Fatal(`Could not identify "From:" line, and therefore unable to extract year.`)
+	}
+	y := fl[len(fl)-4 : len(fl)]
+	file := y + ".mbox"
+	// open file, create new file if needed
+	f, err := os.OpenFile(file, os.O_APPEND|os.O_WRONLY, os.ModeAppend)
+	if err != nil {
+		if os.IsNotExist(err) {
+			// create file
+			fmt.Printf("Creating %s\n", file)
+			f, err = os.Create(file)
+		} else {
+			log.Fatal(err)
+		}
+	}
+	// write the email to the new .mbox file
+	_, err = f.Write([]byte(email))
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer f.Close()
 }
