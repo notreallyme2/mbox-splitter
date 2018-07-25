@@ -5,7 +5,7 @@ The resulting .mbox file was too large to handle easily (8 GB).
 
 mbox-splitter splits mbox files by year and saves them in the same location as individual mbox files, named **YEAR.mbox**.
 
-I've included binaries for the big three (OSX, *nix and Windoze).
+I've included a binary for OSX.
 
 
 ### Correct useage

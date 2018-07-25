@@ -55,7 +55,8 @@ func addLine(b *strings.Builder, l string) {
 }
 
 // writeEmail writes a single email to a new archive, based on year.
-// It checks whether YEAR.mbox exists, if not it creates it in the same directory as the original mbox file.
+// It checks whether YEAR.mbox exists.
+// If not it creates it in the directory from which mbox-splitter was run.
 // It then adds a single email to the YEAR.mbox file
 func writeEmail(email string) {
 	// declare file handle
